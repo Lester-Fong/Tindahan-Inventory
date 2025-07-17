@@ -2,127 +2,145 @@
   <div class="min-h-screen bg-background text-foreground">
     <!-- Header -->
     <header class="border-b bg-card shadow-sm sticky top-0 z-50">
-      <div class="container mx-auto px-4 py-3">
+      <div class="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
         <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <h1 class="text-2xl font-bold text-primary">🏪 Tindahan POS</h1>
-            <nav class="hidden md:flex space-x-6">
-              <button
-                @click="activeTab = 'products'"
-                :class="
-                  activeTab === 'products'
-                    ? 'text-primary font-semibold'
-                    : 'text-muted-foreground hover:text-foreground'
-                "
-                class="transition-colors"
-              >
-                Cart
-              </button>
-              <!-- Cart tab hidden on desktop since it's integrated into products page -->
-              <button
-                @click="activeTab = 'transactions'"
-                :class="
-                  activeTab === 'transactions'
-                    ? 'text-primary font-semibold'
-                    : 'text-muted-foreground hover:text-foreground'
-                "
-                class="transition-colors"
-              >
-                Sales
-              </button>
-            </nav>
+          <div class="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+            <!-- Mobile Logo (Very Compact) -->
+            <h1
+              class="text-lg sm:text-2xl md:text-3xl font-bold text-primary flex flex-col text-center items-center justify-center leading-tight sm:hidden"
+            >
+              <span class="text-lg font-bold leading-none">🏪 Ate Chat &nbsp;</span>
+              <span class="text-lg font-bold leading-none">Sari Sari Store</span>
+            </h1>
+            <!-- Desktop Logo -->
+            <h1
+              class="hidden sm:flex text-2xl md:text-3xl font-bold text-primary flex-col items-start justify-center"
+            >
+              <b>🏪 Ate Chat</b>
+              <b>Sari Sari Store</b>
+            </h1>
           </div>
 
-          <div class="flex items-center space-x-3">
-            <!-- Search Button -->
-            <Button @click="openSearchModal" variant="ghost" size="sm" class="hidden sm:flex">
+          <!-- Desktop Navigation -->
+          <nav class="hidden md:flex space-x-6 mx-4">
+            <button
+              @click="activeTab = 'products'"
+              :class="
+                activeTab === 'products'
+                  ? 'text-primary font-semibold'
+                  : 'text-muted-foreground hover:text-foreground'
+              "
+              class="transition-colors text-lg whitespace-nowrap"
+            >
+              Cart
+            </button>
+            <button
+              @click="activeTab = 'transactions'"
+              :class="
+                activeTab === 'transactions'
+                  ? 'text-primary font-semibold'
+                  : 'text-muted-foreground hover:text-foreground'
+              "
+              class="transition-colors text-lg whitespace-nowrap"
+            >
+              Sales
+            </button>
+          </nav>
+
+          <!-- Actions -->
+          <div class="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
+            <!-- Search Button - Hidden on very small screens -->
+            <Button @click="openSearchModal" variant="ghost" size="sm" class="hidden lg:flex">
               <Search class="w-4 h-4 mr-2" />
               Search
-              <kbd
-                class="ml-2 px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded"
-              >
+              <kbd class="ml-2 px-2 py-1 text-xs font-mono bg-muted border border-border rounded">
                 ⌘K
               </kbd>
             </Button>
 
+            <!-- Compact Search Button for tablets -->
+            <Button
+              @click="openSearchModal"
+              variant="ghost"
+              size="sm"
+              class="hidden sm:flex lg:hidden"
+            >
+              <Search class="w-4 h-4" />
+            </Button>
+
             <!-- Mobile Search Button -->
-            <Button @click="openSearchModal" variant="ghost" size="icon" class="sm:hidden">
-              <Search class="w-5 h-5" />
+            <Button @click="openSearchModal" variant="ghost" size="sm" class="sm:hidden p-2">
+              <Search class="w-4 h-4" />
             </Button>
 
             <!-- Theme Toggle -->
-            <Button @click="toggleTheme" variant="ghost" size="icon">
-              <Sun v-if="isDark" class="w-5 h-5" />
-              <Moon v-else class="w-5 h-5" />
+            <Button @click="toggleTheme" variant="ghost" size="sm" class="p-2">
+              <Sun v-if="isDark" class="w-4 h-4" />
+              <Moon v-else class="w-4 h-4" />
             </Button>
 
-            <!-- Add Product Button -->
-            <Button @click="openAddProductModal" variant="default" size="sm" class="hidden sm:flex">
+            <!-- Add Product Button - Hidden on small screens -->
+            <Button @click="openAddProductModal" variant="default" size="sm" class="hidden md:flex">
               <Plus class="w-4 h-4 mr-2" />
               Add Product
+            </Button>
+
+            <!-- Compact Add Button for small screens -->
+            <Button @click="openAddProductModal" variant="default" size="sm" class="md:hidden p-2">
+              <Plus class="w-4 h-4" />
             </Button>
           </div>
         </div>
 
         <!-- Mobile Navigation -->
-        <nav class="md:hidden flex justify-around mt-3 border-t pt-3">
+        <nav class="md:hidden flex justify-around mt-2 sm:mt-3 border-t pt-2 sm:pt-3 px-2">
           <button
             @click="activeTab = 'products'"
             :class="activeTab === 'products' ? 'text-primary' : 'text-muted-foreground'"
-            class="flex flex-col items-center space-y-1"
+            class="flex flex-col items-center space-y-1 min-w-0 flex-1"
           >
-            <ShoppingCartIcon class="w-5 h-5" />
-            <span class="text-xs">Cart</span>
+            <ShoppingCartIcon class="w-4 h-4 sm:w-5 sm:h-5 font-bold" />
+            <span class="text-xs sm:text-sm truncate font-bold">Cart</span>
           </button>
           <button
             @click="activeTab = 'transactions'"
             :class="activeTab === 'transactions' ? 'text-primary' : 'text-muted-foreground'"
-            class="flex flex-col items-center space-y-1"
+            class="flex flex-col items-center space-y-1 min-w-0 flex-1"
           >
-            <Receipt class="w-5 h-5" />
-            <span class="text-xs">Sales</span>
+            <Receipt class="w-4 h-4 sm:w-5 sm:h-5 font-bold" />
+            <span class="text-xs sm:text-sm truncate font-bold">Sales</span>
           </button>
         </nav>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-6">
+    <main class="container mx-auto px-2 sm:px-4 py-3 sm:py-6">
       <div class="max-w-7xl mx-auto">
         <!-- Products Tab (New Single Page Layout) -->
         <div v-if="activeTab === 'products'">
           <!-- Search Field at the very top (Clickable) -->
-          <div class="mb-6">
-            <div class="flex flex-col sm:flex-row gap-4">
+          <div class="mb-4 sm:mb-6">
+            <div class="flex flex-col gap-2 sm:gap-4">
               <div class="flex-1">
                 <div
                   @click="openSearchModal"
-                  class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer hover:bg-accent/50"
+                  class="flex h-10 sm:h-12 w-full rounded-md border border-input bg-transparent px-3 sm:px-4 py-2 sm:py-3 text-base sm:text-lg shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring cursor-pointer hover:bg-accent/50"
                 >
-                  <Search class="w-4 h-4 mr-2 text-muted-foreground self-center" />
-                  <span class="text-muted-foreground self-center">Search products... (Ctrl+K)</span>
+                  <Search
+                    class="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-muted-foreground self-center"
+                  />
+                  <span class="text-muted-foreground self-center text-sm sm:text-lg truncate"
+                    >Search products... (Ctrl+K)</span
+                  >
                 </div>
               </div>
-              <select
-                v-model="selectedCategory"
-                class="px-3 py-2 border border-input rounded-md bg-background text-foreground h-10"
-              >
-                <option value="">All Categories</option>
-                <option v-for="(label, value) in PRODUCT_CATEGORIES" :key="value" :value="value">
-                  {{ label }}
-                </option>
-              </select>
             </div>
-          </div>
-
-          <!-- Header -->
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-3xl font-bold">Shopping Cart</h2>
           </div>
 
           <!-- Cart Only Layout -->
           <div class="max-w-4xl mx-auto">
-            <div class="bg-card border rounded-lg p-6 shadow-sm">
+            <div class="bg-card border rounded-lg p-4 sm:p-6 md:p-8 shadow-sm">
               <ShoppingCart />
             </div>
           </div>
