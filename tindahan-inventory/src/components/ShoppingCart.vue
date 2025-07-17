@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-4 px-2 sm:px-4">
       <h2 class="text-xl sm:text-2xl font-bold truncate">Shopping Cart</h2>
       <Button
         v-if="cart.length > 0"
@@ -94,7 +94,7 @@
     </div>
 
     <!-- Cart Summary -->
-    <div v-if="cart.length > 0" class="border-t pt-3 sm:pt-4">
+    <div v-if="cart.length > 0" class="border-t pt-3 sm:pt-4 px-2 sm:px-4">
       <div class="space-y-2">
         <div class="flex justify-between text-xs sm:text-sm">
           <span>Items ({{ cartItemCount }})</span>
