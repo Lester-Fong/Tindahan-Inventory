@@ -2,9 +2,9 @@
   <div class="min-h-screen bg-background text-foreground">
     <!-- Header -->
     <header class="border-b bg-card shadow-sm sticky top-0 z-50">
-      <div class="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
+      <div class="container mx-auto px-3 sm:px-4 py-2 sm:py-3">
         <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+          <div class="flex items-center space-x-2 sm:space-x-4 min-w-0">
             <!-- Mobile Logo (Very Compact) -->
             <h1
               class="text-lg sm:text-2xl md:text-3xl font-bold text-primary flex flex-col text-center items-center justify-center leading-tight sm:hidden"
@@ -115,7 +115,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-2 sm:px-4 py-3 sm:py-6">
+    <main class="container mx-auto px-3 sm:px-4 py-3 sm:py-6">
       <div class="max-w-7xl mx-auto">
         <!-- Products Tab (New Single Page Layout) -->
         <div v-if="activeTab === 'products'">
@@ -140,7 +140,7 @@
 
           <!-- Cart Only Layout -->
           <div class="max-w-4xl mx-auto">
-            <div class="bg-card border rounded-lg p-4 sm:p-6 md:p-8 shadow-sm">
+            <div class="bg-card border rounded-lg py-4 px-2 sm:p-6 md:p-8 shadow-sm">
               <ShoppingCart />
             </div>
           </div>
