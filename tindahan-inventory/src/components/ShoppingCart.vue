@@ -10,35 +10,45 @@
     <!-- Cart Items -->
     <div v-if="cart.length > 0" class="space-y-3">
       <Card v-for="item in cart" :key="item.product.id" class="p-4">
-        <div class="flex items-center justify-between">
-          <div class="flex-1 min-w-0">
-            <h3 class="font-semibold truncate">{{ item.product.name }}</h3>
-            <p class="text-sm text-muted-foreground">
-              {{ item.product.brand }} • {{ item.product.size }}
-            </p>
-            <p class="text-sm text-muted-foreground">₱{{ item.product.price.toFixed(2) }} each</p>
+        <!-- Product Information Section -->
+        <div class="space-y-3">
+          <!-- Top Row: Product Details -->
+          <div class="flex justify-between items-start">
+            <div class="flex-1 min-w-0 space-y-1">
+              <h3 class="font-semibold truncate">{{ item.product.name }}</h3>
+              <p class="text-sm text-muted-foreground">
+                {{ item.product.brand }} • {{ item.product.size }}
+              </p>
+              <p class="text-sm text-muted-foreground">₱{{ item.product.price.toFixed(2) }} each</p>
+            </div>
+            <!-- Subtotal (Right side) -->
+            <div class="text-right ml-4">
+              <div class="text-lg font-semibold text-primary">₱{{ item.subtotal.toFixed(2) }}</div>
+              <div class="text-xs text-muted-foreground">Total</div>
+            </div>
           </div>
 
-          <div class="flex items-center gap-3 ml-4">
+          <!-- Bottom Row: Controls -->
+          <div class="flex items-center justify-between pt-2 border-t border-border">
             <!-- Quantity Controls -->
             <div class="flex items-center gap-2">
               <Button
                 @click="decreaseQuantity(item.product.id)"
                 variant="outline"
-                size="icon"
-                class="h-8 w-8 flex p-0 items-center justify-center"
+                size="sm"
+                class="h-8 w-8 p-0 flex items-center justify-center"
               >
                 <Minus class="w-4 h-4" />
               </Button>
 
-              <span class="w-8 text-center font-medium">
+              <span class="w-12 text-center font-medium bg-muted rounded px-2 py-1 text-sm">
                 {{ item.quantity }}
               </span>
 
               <Button
                 @click="increaseQuantity(item.product.id)"
                 variant="outline"
-                size="icon"
+                size="sm"
                 class="h-8 w-8 p-0 flex items-center justify-center"
                 :disabled="item.quantity >= item.product.stock"
               >
@@ -46,19 +56,15 @@
               </Button>
             </div>
 
-            <!-- Subtotal -->
-            <div class="text-right min-w-0">
-              <div class="font-semibold">₱{{ item.subtotal.toFixed(2) }}</div>
-            </div>
-
             <!-- Remove Button -->
             <Button
               @click="removeFromCart(item.product.id)"
               variant="ghost"
-              size="icon"
-              class="h-8 w-8 flex p-0 items-center justify-center text-destructive hover:text-destructive"
+              size="sm"
+              class="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <Trash2 class="w-4 h-4" />
+              <Trash2 class="w-4 h-4 mr-1" />
+              Remove
             </Button>
           </div>
         </div>
