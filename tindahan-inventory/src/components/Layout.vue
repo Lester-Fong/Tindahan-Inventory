@@ -16,25 +16,9 @@
                 "
                 class="transition-colors"
               >
-                Products
-              </button>
-              <button
-                @click="activeTab = 'cart'"
-                :class="
-                  activeTab === 'cart'
-                    ? 'text-primary font-semibold'
-                    : 'text-muted-foreground hover:text-foreground'
-                "
-                class="transition-colors relative"
-              >
                 Cart
-                <span
-                  v-if="cartItemCount > 0"
-                  class="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                >
-                  {{ cartItemCount }}
-                </span>
               </button>
+              <!-- Cart tab hidden on desktop since it's integrated into products page -->
               <button
                 @click="activeTab = 'transactions'"
                 :class="
@@ -50,6 +34,22 @@
           </div>
 
           <div class="flex items-center space-x-3">
+            <!-- Search Button -->
+            <Button @click="openSearchModal" variant="ghost" size="sm" class="hidden sm:flex">
+              <Search class="w-4 h-4 mr-2" />
+              Search
+              <kbd
+                class="ml-2 px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded"
+              >
+                ⌘K
+              </kbd>
+            </Button>
+
+            <!-- Mobile Search Button -->
+            <Button @click="openSearchModal" variant="ghost" size="icon" class="sm:hidden">
+              <Search class="w-5 h-5" />
+            </Button>
+
             <!-- Theme Toggle -->
             <Button @click="toggleTheme" variant="ghost" size="icon">
               <Sun v-if="isDark" class="w-5 h-5" />
@@ -71,22 +71,8 @@
             :class="activeTab === 'products' ? 'text-primary' : 'text-muted-foreground'"
             class="flex flex-col items-center space-y-1"
           >
-            <Package class="w-5 h-5" />
-            <span class="text-xs">Products</span>
-          </button>
-          <button
-            @click="activeTab = 'cart'"
-            :class="activeTab === 'cart' ? 'text-primary' : 'text-muted-foreground'"
-            class="flex flex-col items-center space-y-1 relative"
-          >
             <ShoppingCartIcon class="w-5 h-5" />
             <span class="text-xs">Cart</span>
-            <span
-              v-if="cartItemCount > 0"
-              class="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-4 w-4 flex items-center justify-center"
-            >
-              {{ cartItemCount }}
-            </span>
           </button>
           <button
             @click="activeTab = 'transactions'"
@@ -101,26 +87,45 @@
     </header>
 
     <!-- Main Content -->
-    <main
-      class="container mx-auto px-4 py-6"
-      :class="{ 'pb-24 md:pb-6': cartItemCount > 0 && activeTab !== 'cart' }"
-    >
+    <main class="container mx-auto px-4 py-6">
       <div class="max-w-7xl mx-auto">
-        <!-- Products Tab -->
+        <!-- Products Tab (New Single Page Layout) -->
         <div v-if="activeTab === 'products'">
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-3xl font-bold">Products</h2>
-            <Button @click="openAddProductModal" class="sm:hidden">
-              <Plus class="w-4 h-4 mr-2" />
-              Add Product
-            </Button>
+          <!-- Search Field at the very top (Clickable) -->
+          <div class="mb-6">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="flex-1">
+                <div
+                  @click="openSearchModal"
+                  class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer hover:bg-accent/50"
+                >
+                  <Search class="w-4 h-4 mr-2 text-muted-foreground self-center" />
+                  <span class="text-muted-foreground self-center">Search products... (Ctrl+K)</span>
+                </div>
+              </div>
+              <select
+                v-model="selectedCategory"
+                class="px-3 py-2 border border-input rounded-md bg-background text-foreground h-10"
+              >
+                <option value="">All Categories</option>
+                <option v-for="(label, value) in PRODUCT_CATEGORIES" :key="value" :value="value">
+                  {{ label }}
+                </option>
+              </select>
+            </div>
           </div>
-          <ProductList />
-        </div>
 
-        <!-- Cart Tab -->
-        <div v-if="activeTab === 'cart'">
-          <ShoppingCart />
+          <!-- Header -->
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-3xl font-bold">Shopping Cart</h2>
+          </div>
+
+          <!-- Cart Only Layout -->
+          <div class="max-w-4xl mx-auto">
+            <div class="bg-card border rounded-lg p-6 shadow-sm">
+              <ShoppingCart />
+            </div>
+          </div>
         </div>
 
         <!-- Transactions Tab -->
@@ -130,17 +135,6 @@
       </div>
     </main>
 
-    <!-- Quick Cart Summary (Mobile) -->
-    <div
-      v-if="cartItemCount > 0 && activeTab !== 'cart'"
-      class="fixed bottom-4 right-4 md:hidden z-40"
-    >
-      <Button @click="activeTab = 'cart'" class="rounded-full shadow-lg" size="lg">
-        <ShoppingCart class="w-5 h-5 mr-2" />
-        ₱{{ cartTotal.toFixed(2) }}
-      </Button>
-    </div>
-
     <!-- Add Product Modal -->
     <ProductModal
       :is-open="showAddProduct"
@@ -148,35 +142,44 @@
       @close="closeAddProductModal"
       @success="onAddProductSuccess"
     />
+
+    <!-- Search Modal -->
+    <SearchModal :is-open="showSearchModal" @close="closeSearchModal" @select="onProductSelect" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useInventoryStore } from '@/stores/inventory'
 import { useTheme } from '@/composables/useTheme'
-import ProductList from '@/components/ProductList.vue'
+import { PRODUCT_CATEGORIES, type Product } from '@/types'
 import ShoppingCart from '@/components/ShoppingCart.vue'
 import SalesHistory from '@/components/SalesHistory.vue'
 import ProductModal from '@/components/ProductModal.vue'
+import SearchModal from '@/components/SearchModal.vue'
 import Button from '@/components/ui/Button.vue'
-import {
-  Sun,
-  Moon,
-  Plus,
-  Package,
-  ShoppingCart as ShoppingCartIcon,
-  Receipt,
-} from 'lucide-vue-next'
+import { Sun, Moon, Plus, ShoppingCart as ShoppingCartIcon, Receipt, Search } from 'lucide-vue-next'
 
 const store = useInventoryStore()
 const { isDark, toggleTheme, initTheme } = useTheme()
 
-const activeTab = ref<'products' | 'cart' | 'transactions'>('products')
+const activeTab = ref<'products' | 'transactions'>('products')
 const showAddProduct = ref(false)
+const showSearchModal = ref(false)
 
 const cartItemCount = computed(() => store.cartItemCount)
 const cartTotal = computed(() => store.cartTotal)
+
+// Search and filter functionality
+const searchQuery = computed({
+  get: () => store.searchQuery,
+  set: (value) => store.setSearchQuery(value),
+})
+
+const selectedCategory = computed({
+  get: () => store.selectedCategory,
+  set: (value) => store.setSelectedCategory(value),
+})
 
 const openAddProductModal = () => {
   showAddProduct.value = true
@@ -190,7 +193,34 @@ const onAddProductSuccess = () => {
   showAddProduct.value = false
 }
 
+// Search modal functions
+const openSearchModal = () => {
+  showSearchModal.value = true
+}
+
+const closeSearchModal = () => {
+  showSearchModal.value = false
+}
+
+const onProductSelect = (product: Product) => {
+  // Add the selected product to cart
+  store.addToCart(product, 1)
+}
+
+// Global keyboard shortcut handling
+const handleGlobalKeydown = (event: KeyboardEvent) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+    event.preventDefault()
+    openSearchModal()
+  }
+}
+
 onMounted(() => {
   initTheme()
+  document.addEventListener('keydown', handleGlobalKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleGlobalKeydown)
 })
 </script>
