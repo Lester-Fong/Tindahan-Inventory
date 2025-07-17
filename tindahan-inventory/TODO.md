@@ -100,6 +100,17 @@ Creating an inventory system for a Filipino tindahan (mini grocery) with AI agen
 - [x] Replace products grid with cart-only layout - Streamlined interface focusing on cart management
 - [x] Make search field clickable (non-typeable) - Unified search experience through modal
 
+### Phase 12: Accessibility & Color Theme Redesign
+
+- [ ] Implement new color scheme for dark theme (Primary: #0d1b2a, Secondary: #e0e1dd)
+- [ ] Implement new color scheme for light theme (Primary: #fefee3, Secondary: #2c6e49)
+- [ ] Increase text sizes for better readability for older users
+- [ ] Enhance button sizes and touch targets for easier interaction
+- [ ] Improve contrast ratios for better accessibility
+- [ ] Adjust spacing and padding for better visual hierarchy
+- [ ] Update component styling with new theme colors
+- [ ] Test color combinations for optimal readability
+
 ## 🎯 Priority Features (Must Complete First)
 
 1. ✅ Display products as list
