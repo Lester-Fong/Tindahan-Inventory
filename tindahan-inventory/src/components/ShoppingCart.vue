@@ -22,20 +22,20 @@
           <!-- Top Row: Product Details -->
           <div class="flex justify-between items-start gap-2">
             <div class="flex-1 min-w-0 space-y-1">
-              <h3 class="font-semibold truncate text-sm sm:text-base">{{ item.product.name }}</h3>
-              <p class="text-xs sm:text-sm text-muted-foreground">
+              <h3 class="font-semibold truncate text-lg sm:text-base">{{ item.product.name }}</h3>
+              <p class="text-sm sm:text-sm text-muted-foreground">
                 {{ item.product.brand }} • {{ item.product.size }}
               </p>
-              <p class="text-xs sm:text-sm text-muted-foreground">
+              <p class="text-sm sm:text-sm text-muted-foreground">
                 ₱{{ item.product.price.toFixed(2) }} each
               </p>
             </div>
             <!-- Subtotal (Right side) -->
             <div class="text-right flex-shrink-0">
-              <div class="text-base sm:text-lg font-semibold text-primary">
+              <div class="text-lg sm:text-lg font-semibold text-primary">
                 ₱{{ item.subtotal.toFixed(2) }}
               </div>
-              <div class="text-xs text-muted-foreground">Total</div>
+              <div class="text-sm text-muted-foreground">Total</div>
             </div>
           </div>
 
@@ -100,9 +100,9 @@
           <span>Items ({{ cartItemCount }})</span>
           <span>₱{{ cartTotal.toFixed(2) }}</span>
         </div>
-        <div class="flex justify-between font-semibold text-base sm:text-lg">
-          <span>Total</span>
-          <span>₱{{ cartTotal.toFixed(2) }}</span>
+        <div class="flex justify-between font-semibold text-lg sm:text-lg">
+          <span class="font-bold">Total</span>
+          <span class="font-bold">₱{{ cartTotal.toFixed(2) }}</span>
         </div>
       </div>
 
