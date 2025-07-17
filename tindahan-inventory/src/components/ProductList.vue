@@ -1,37 +1,7 @@
 <template>
   <div class="space-y-4">
-    <!-- Search and Filter Section -->
-    <div class="flex flex-col sm:flex-row gap-4">
-      <div class="flex-1">
-        <input
-          v-model="searchQuery"
-          placeholder="Search products..."
-          class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-          type="search"
-        />
-      </div>
-      <select
-        v-model="selectedCategory"
-        class="px-3 py-2 border border-input rounded-md bg-background text-foreground"
-      >
-        <option value="">All Categories</option>
-        <option v-for="(label, value) in PRODUCT_CATEGORIES" :key="value" :value="value">
-          {{ label }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Add Product Button -->
-    <div class="flex justify-between items-center">
-      <h2 class="text-2xl font-bold">Products</h2>
-      <Button @click="showProductModal = true" size="sm">
-        <Plus class="w-4 h-4 mr-2" />
-        Add New Product
-      </Button>
-    </div>
-
     <!-- Products Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
       <Card
         v-for="product in filteredProducts"
         :key="product.id"
@@ -156,16 +126,6 @@ const store = useInventoryStore()
 const showProductModal = ref(false)
 const selectedProduct = ref<Product | null>(null)
 const activeDropdown = ref<string | null>(null)
-
-const searchQuery = computed({
-  get: () => store.searchQuery,
-  set: (value) => store.setSearchQuery(value),
-})
-
-const selectedCategory = computed({
-  get: () => store.selectedCategory,
-  set: (value) => store.setSelectedCategory(value),
-})
 
 const filteredProducts = computed(() => store.filteredProducts)
 
