@@ -1,47 +1,60 @@
 <template>
   <div class="space-y-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold">Shopping Cart</h2>
-      <Button v-if="cart.length > 0" @click="clearCart" variant="outline" size="sm">
-        Clear All
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl sm:text-2xl font-bold truncate">Shopping Cart</h2>
+      <Button
+        v-if="cart.length > 0"
+        @click="clearCart"
+        variant="outline"
+        size="sm"
+        class="ml-2 flex-shrink-0"
+      >
+        <span class="hidden sm:inline">Clear All</span>
+        <span class="sm:hidden">Clear</span>
       </Button>
     </div>
 
     <!-- Cart Items -->
     <div v-if="cart.length > 0" class="space-y-3">
-      <Card v-for="item in cart" :key="item.product.id" class="p-4">
+      <Card v-for="item in cart" :key="item.product.id" class="p-3 sm:p-4">
         <!-- Product Information Section -->
         <div class="space-y-3">
           <!-- Top Row: Product Details -->
-          <div class="flex justify-between items-start">
+          <div class="flex justify-between items-start gap-2">
             <div class="flex-1 min-w-0 space-y-1">
-              <h3 class="font-semibold truncate">{{ item.product.name }}</h3>
-              <p class="text-sm text-muted-foreground">
+              <h3 class="font-semibold truncate text-sm sm:text-base">{{ item.product.name }}</h3>
+              <p class="text-xs sm:text-sm text-muted-foreground">
                 {{ item.product.brand }} • {{ item.product.size }}
               </p>
-              <p class="text-sm text-muted-foreground">₱{{ item.product.price.toFixed(2) }} each</p>
+              <p class="text-xs sm:text-sm text-muted-foreground">
+                ₱{{ item.product.price.toFixed(2) }} each
+              </p>
             </div>
             <!-- Subtotal (Right side) -->
-            <div class="text-right ml-4">
-              <div class="text-lg font-semibold text-primary">₱{{ item.subtotal.toFixed(2) }}</div>
+            <div class="text-right flex-shrink-0">
+              <div class="text-base sm:text-lg font-semibold text-primary">
+                ₱{{ item.subtotal.toFixed(2) }}
+              </div>
               <div class="text-xs text-muted-foreground">Total</div>
             </div>
           </div>
 
           <!-- Bottom Row: Controls -->
-          <div class="flex items-center justify-between pt-2 border-t border-border">
+          <div class="flex items-center justify-between pt-2 border-t border-border gap-2">
             <!-- Quantity Controls -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 sm:gap-2">
               <Button
                 @click="decreaseQuantity(item.product.id)"
                 variant="outline"
                 size="sm"
-                class="h-8 w-8 p-0 flex items-center justify-center"
+                class="h-7 w-7 sm:h-8 sm:w-8 p-0 flex items-center justify-center flex-shrink-0"
               >
-                <Minus class="w-4 h-4" />
+                <Minus class="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
 
-              <span class="w-12 text-center font-medium bg-muted rounded px-2 py-1 text-sm">
+              <span
+                class="w-8 sm:w-12 text-center font-medium bg-muted rounded px-1 sm:px-2 py-1 text-xs sm:text-sm"
+              >
                 {{ item.quantity }}
               </span>
 
@@ -49,10 +62,10 @@
                 @click="increaseQuantity(item.product.id)"
                 variant="outline"
                 size="sm"
-                class="h-8 w-8 p-0 flex items-center justify-center"
+                class="h-7 w-7 sm:h-8 sm:w-8 p-0 flex items-center justify-center flex-shrink-0"
                 :disabled="item.quantity >= item.product.stock"
               >
-                <Plus class="w-4 h-4" />
+                <Plus class="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
             </div>
 
@@ -61,10 +74,10 @@
               @click="removeFromCart(item.product.id)"
               variant="ghost"
               size="sm"
-              class="text-destructive hover:text-destructive hover:bg-destructive/10"
+              class="bg-rose-700 text-destructive hover:text-destructive hover:bg-destructive/10 text-xs sm:text-sm px-2 sm:px-3"
             >
-              <Trash2 class="w-4 h-4 mr-1" />
-              Remove
+              <Trash2 class="text-accent-foreground w-3 h-3 sm:w-4 sm:h-4 m-1" />
+              <span class="text-accent-foreground hidden sm:inline">Remove</span>
             </Button>
           </div>
         </div>
@@ -72,27 +85,29 @@
     </div>
 
     <!-- Empty Cart -->
-    <div v-else class="text-center py-12">
-      <ShoppingCart class="w-12 h-12 mx-auto mb-4 opacity-50 text-muted-foreground" />
-      <p class="text-lg font-medium text-muted-foreground">Your cart is empty</p>
-      <p class="text-sm text-muted-foreground">Add some products to get started</p>
+    <div v-else class="text-center py-8 sm:py-12">
+      <ShoppingCart
+        class="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 opacity-50 text-muted-foreground"
+      />
+      <p class="text-base sm:text-lg font-medium text-muted-foreground">Your cart is empty</p>
+      <p class="text-xs sm:text-sm text-muted-foreground">Add some products to get started</p>
     </div>
 
     <!-- Cart Summary -->
-    <div v-if="cart.length > 0" class="border-t pt-4">
+    <div v-if="cart.length > 0" class="border-t pt-3 sm:pt-4">
       <div class="space-y-2">
-        <div class="flex justify-between text-sm">
+        <div class="flex justify-between text-xs sm:text-sm">
           <span>Items ({{ cartItemCount }})</span>
           <span>₱{{ cartTotal.toFixed(2) }}</span>
         </div>
-        <div class="flex justify-between font-semibold text-lg">
+        <div class="flex justify-between font-semibold text-base sm:text-lg">
           <span>Total</span>
           <span>₱{{ cartTotal.toFixed(2) }}</span>
         </div>
       </div>
 
-      <Button @click="showCheckoutModal = true" class="w-full mt-4" size="lg">
-        Proceed to Checkout
+      <Button @click="showCheckoutModal = true" class="w-full mt-3 sm:mt-4" size="lg">
+        <span class="text-sm sm:text-base">Proceed to Checkout</span>
       </Button>
     </div>
 
