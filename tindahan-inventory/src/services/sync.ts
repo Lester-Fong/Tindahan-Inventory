@@ -120,28 +120,38 @@ class SyncService {
   }
 
   async importFromCSV(csvData: CSVImportRow[]): Promise<void> {
-    if (!this.isOnline.value) {
-      throw new Error('Cannot import CSV while offline')
-    }
-
-    this.updateSyncStatus('syncing')
-
     try {
-      // Validate CSV data
-      const validProducts = this.validateCSVData(csvData)
+      this.updateSyncStatus('syncing')
       
-      // Import to Firebase
-      await firebaseService.bulkImportProducts(validProducts)
+      // Validate and clean CSV data
+      const validatedData = this.validateCSVData(csvData)
+      if (validatedData.length === 0) {
+        throw new Error('No valid products found in CSV')
+      }
+
+      // Import to Firebase and get counts
+      const { imported, updated } = await firebaseService.bulkImportProducts(validatedData)
       
-      // Sync back to local storage
+      // Sync latest data from Firebase to local storage
       await this.syncFromFirebase()
       
-      this.updateSyncStatus('success')
+      // Create detailed success message
+      const totalProcessed = imported + updated
+      let message = `Successfully processed ${totalProcessed} products`
+      if (imported > 0 && updated > 0) {
+        message += ` (${imported} new, ${updated} updated)`
+      } else if (imported > 0) {
+        message += ` (all new)`
+      } else if (updated > 0) {
+        message += ` (all updated)`
+      }
       
+      alert(message)
+      this.updateSyncStatus('idle')
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'CSV import failed'
-      this.updateSyncStatus('error', errorMessage)
-      throw error
+      console.error('Error importing CSV:', error)
+      this.updateSyncStatus('error', (error as Error).message)
+      alert(`Failed to import CSV: ${(error as Error).message}`)
     }
   }
 
