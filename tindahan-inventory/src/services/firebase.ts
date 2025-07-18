@@ -80,24 +80,55 @@ export class FirebaseService {
   }
 
   // Batch operations for CSV import
-  async bulkImportProducts(products: CSVImportRow[]): Promise<void> {
+  async bulkImportProducts(products: CSVImportRow[]): Promise<{ imported: number, updated: number }> {
     try {
+      // First, get all existing products to check for duplicates
+      const existingProducts = await this.getAllProducts()
+      const existingProductsMap = new Map<string, Product>()
+      
+      // Create a map of existing products using name+size as key
+      existingProducts.forEach(product => {
+        const key = `${product.name.toLowerCase().trim()}_${product.size.toLowerCase().trim()}`
+        existingProductsMap.set(key, product)
+      })
+
       const batch = writeBatch(db)
       const productsCollection = collection(db, this.PRODUCTS_COLLECTION)
+      let importedCount = 0
+      let updatedCount = 0
 
       products.forEach((product) => {
-        const docRef = doc(productsCollection)
-        batch.set(docRef, {
-          name: product.name.trim(),
-          brand: product.brand.trim(),
-          size: product.size.trim(),
-          price: parseFloat(product.price),
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        })
+        const key = `${product.name.toLowerCase().trim()}_${product.size.toLowerCase().trim()}`
+        const existingProduct = existingProductsMap.get(key)
+
+        if (existingProduct) {
+          // Update existing product
+          const docRef = doc(db, this.PRODUCTS_COLLECTION, existingProduct.id)
+          batch.update(docRef, {
+            name: product.name.trim(),
+            brand: product.brand.trim(),
+            size: product.size.trim(),
+            price: parseFloat(product.price),
+            updatedAt: serverTimestamp(),
+          })
+          updatedCount++
+        } else {
+          // Create new product
+          const docRef = doc(productsCollection)
+          batch.set(docRef, {
+            name: product.name.trim(),
+            brand: product.brand.trim(),
+            size: product.size.trim(),
+            price: parseFloat(product.price),
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          })
+          importedCount++
+        }
       })
 
       await batch.commit()
+      return { imported: importedCount, updated: updatedCount }
     } catch (error) {
       console.error('Error bulk importing products to Firebase:', error)
       throw new Error('Failed to import products to server')
