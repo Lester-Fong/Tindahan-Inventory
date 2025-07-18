@@ -1,15 +1,9 @@
 export interface Product {
   id: string
   name: string
-  category: string
+  brand: string
   size: string
   price: number
-  description?: string
-  image?: string
-  stock: number
-  barcode?: string
-  brand?: string
-  unit: string // pcs, kg, liter, etc.
   createdAt: string
   updatedAt: string
 }
@@ -31,29 +25,16 @@ export interface Transaction {
   cashierName?: string
 }
 
-export type ProductCategory = 
-  | 'canned-goods'
-  | 'crackers'
-  | 'cooking-oil'
-  | 'biscuits'
-  | 'beverages'
-  | 'instant-noodles'
-  | 'rice'
-  | 'snacks'
-  | 'household'
-  | 'personal-care'
-  | 'others'
+// Sync and Firebase related types
+export interface SyncMetadata {
+  lastSync: string
+  syncStatus: 'idle' | 'syncing' | 'success' | 'error'
+  errorMessage?: string
+}
 
-export const PRODUCT_CATEGORIES: Record<ProductCategory, string> = {
-  'canned-goods': 'Canned Goods',
-  'crackers': 'Crackers',
-  'cooking-oil': 'Cooking Oil',
-  'biscuits': 'Biscuits',
-  'beverages': 'Beverages',
-  'instant-noodles': 'Instant Noodles',
-  'rice': 'Rice',
-  'snacks': 'Snacks',
-  'household': 'Household Items',
-  'personal-care': 'Personal Care',
-  'others': 'Others'
+export interface CSVImportRow {
+  name: string
+  brand: string
+  size: string
+  price: string
 }
