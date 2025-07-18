@@ -1,7 +1,9 @@
 <template>
-  <Layout />
+  <router-view />
+  <!-- Notification Toast (Global) -->
+  <NotificationToast />
 </template>
 
 <script setup lang="ts">
-import Layout from '@/components/Layout.vue'
+import NotificationToast from '@/components/NotificationToast.vue'
 </script>
