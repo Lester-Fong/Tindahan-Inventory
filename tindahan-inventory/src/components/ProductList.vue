@@ -29,26 +29,13 @@
               <span>{{ product.brand || 'N/A' }}</span>
             </div>
             <div class="flex justify-between text-sm">
-              <span class="text-muted-foreground">Stock:</span>
-              <span :class="product.stock <= 5 ? 'text-destructive font-medium' : ''">
-                {{ product.stock }} {{ product.unit }}
-              </span>
-            </div>
-            <div class="flex justify-between text-sm">
-              <span class="text-muted-foreground">Category:</span>
-              <span class="text-xs bg-secondary px-2 py-1 rounded">
-                {{ PRODUCT_CATEGORIES[product.category as keyof typeof PRODUCT_CATEGORIES] }}
-              </span>
+              <span class="text-muted-foreground">Size:</span>
+              <span>{{ product.size }}</span>
             </div>
           </div>
 
           <div class="flex gap-2 mt-3">
-            <Button
-              @click.stop="addToCart(product)"
-              class="flex-1"
-              size="sm"
-              :disabled="product.stock === 0"
-            >
+            <Button @click.stop="addToCart(product)" class="flex-1" size="sm">
               <Plus class="w-4 h-4 mr-1" />
               Add to Cart
             </Button>
@@ -113,7 +100,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useInventoryStore } from '@/stores/inventory'
-import { PRODUCT_CATEGORIES, type Product } from '@/types'
+import { type Product } from '@/types'
 import Card from '@/components/ui/Card.vue'
 import CardHeader from '@/components/ui/CardHeader.vue'
 import CardTitle from '@/components/ui/CardTitle.vue'
@@ -130,9 +117,7 @@ const activeDropdown = ref<string | null>(null)
 const filteredProducts = computed(() => store.filteredProducts)
 
 const addToCart = (product: Product) => {
-  if (product.stock > 0) {
-    store.addToCart(product, 1)
-  }
+  store.addToCart(product, 1)
 }
 
 const openEditModal = (product: Product) => {
@@ -155,11 +140,15 @@ const editProduct = (product: Product) => {
   activeDropdown.value = null // Close dropdown
 }
 
-const deleteProduct = (product: Product) => {
+const deleteProduct = async (product: Product) => {
   if (
     confirm(`Are you sure you want to delete "${product.name}"?\n\nThis action cannot be undone.`)
   ) {
-    store.deleteProduct(product.id)
+    try {
+      await store.deleteProduct(product.id)
+    } catch (error) {
+      alert('Error deleting product: ' + (error as Error).message)
+    }
   }
   activeDropdown.value = null // Close dropdown
 }
