@@ -3,37 +3,45 @@
     <!-- Sync Status Bar -->
     <div class="mb-4 p-3 rounded-lg border" :class="statusBarClass">
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-2 h-2 rounded-full" :class="statusIndicatorClass"></div>
-          <span class="text-sm font-medium">{{ connectionStatusText }}</span>
-          <span class="text-xs text-muted-foreground">{{ lastSyncText }}</span>
+        <div class="flex items-center gap-2 flex-1 min-w-0">
+          <div class="w-2 h-2 rounded-full flex-shrink-0" :class="statusIndicatorClass"></div>
+          <span class="text-sm font-medium truncate">{{ connectionStatusText }}</span>
+          <span class="text-xs text-muted-foreground truncate hidden sm:block">{{
+            lastSyncText
+          }}</span>
         </div>
 
-        <div class="flex gap-2">
+        <div class="flex gap-1 sm:gap-2 flex-shrink-0">
           <Button
             @click="syncFromFirebase"
             :disabled="!isOnline || isSyncing"
             size="sm"
             variant="outline"
+            class="px-2 sm:px-3"
           >
-            <RefreshCw class="w-4 h-4 mr-1" :class="{ 'animate-spin': isSyncing }" />
-            Sync
+            <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isSyncing, 'sm:mr-1': true }" />
+            <span class="hidden sm:inline">Sync</span>
           </Button>
 
-          <Button @click="showImportModal = true" size="sm" variant="outline">
-            <Upload class="w-4 h-4 mr-1" />
-            Import CSV
+          <Button @click="showImportModal = true" size="sm" variant="outline" class="px-2 sm:px-3">
+            <Upload class="w-4 h-4 sm:mr-1" />
+            <span class="hidden sm:inline">Import CSV</span>
           </Button>
 
-          <Button @click="downloadData" size="sm" variant="outline">
-            <Download class="w-4 h-4 mr-1" />
-            Export
+          <Button @click="downloadData" size="sm" variant="outline" class="px-2 sm:px-3">
+            <Download class="w-4 h-4 sm:mr-1" />
+            <span class="hidden sm:inline">Export</span>
           </Button>
         </div>
       </div>
 
       <div v-if="syncError" class="mt-2 text-sm text-destructive">
         {{ syncError }}
+      </div>
+
+      <!-- Mobile-only last sync info -->
+      <div class="mt-2 text-xs text-muted-foreground sm:hidden">
+        {{ lastSyncText }}
       </div>
     </div>
 
@@ -244,9 +252,9 @@ const importProducts = async () => {
   try {
     await syncService.importFromCSV(csvData.value)
     closeImportModal()
-    alert(`Successfully imported ${csvData.value.length} products!`)
   } catch (error) {
-    alert('Import failed: ' + (error as Error).message)
+    // Error is now handled by the sync service with notifications
+    console.error('Import error:', error)
   } finally {
     isImporting.value = false
   }
