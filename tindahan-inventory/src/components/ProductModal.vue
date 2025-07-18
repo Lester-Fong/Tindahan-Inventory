@@ -40,22 +40,7 @@
               />
             </div>
 
-            <!-- Category -->
-            <div>
-              <label class="text-sm font-medium block mb-2">Category *</label>
-              <select
-                v-model="form.category"
-                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
-                required
-              >
-                <option value="">Select Category</option>
-                <option v-for="(label, value) in PRODUCT_CATEGORIES" :key="value" :value="value">
-                  {{ label }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Size -->
+            <!-- Size/Weight -->
             <div>
               <label class="text-sm font-medium block mb-2">Size/Weight *</label>
               <input
@@ -66,28 +51,8 @@
               />
             </div>
 
-            <!-- Unit -->
-            <div>
-              <label class="text-sm font-medium block mb-2">Unit *</label>
-              <select
-                v-model="form.unit"
-                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
-                required
-              >
-                <option value="">Select Unit</option>
-                <option value="pcs">Pieces</option>
-                <option value="pack">Pack</option>
-                <option value="bottle">Bottle</option>
-                <option value="can">Can</option>
-                <option value="kg">Kilogram</option>
-                <option value="liter">Liter</option>
-                <option value="sachet">Sachet</option>
-                <option value="box">Box</option>
-              </select>
-            </div>
-
             <!-- Price -->
-            <div>
+            <div class="md:col-span-2">
               <label class="text-sm font-medium block mb-2">Price (₱) *</label>
               <input
                 v-model.number="form.price"
@@ -98,40 +63,6 @@
                 required
                 class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               />
-            </div>
-
-            <!-- Stock -->
-            <div>
-              <label class="text-sm font-medium block mb-2">Stock Quantity *</label>
-              <input
-                v-model.number="form.stock"
-                type="number"
-                min="0"
-                placeholder="0"
-                required
-                class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              />
-            </div>
-
-            <!-- Barcode -->
-            <div>
-              <label class="text-sm font-medium block mb-2">Barcode</label>
-              <input
-                v-model="form.barcode"
-                placeholder="Product barcode"
-                class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              />
-            </div>
-
-            <!-- Description -->
-            <div class="md:col-span-2">
-              <label class="text-sm font-medium block mb-2">Description</label>
-              <textarea
-                v-model="form.description"
-                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground resize-none"
-                rows="3"
-                placeholder="Product description (optional)"
-              ></textarea>
             </div>
           </div>
 
@@ -153,7 +84,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useInventoryStore } from '@/stores/inventory'
-import { PRODUCT_CATEGORIES, type Product } from '@/types'
+import { type Product } from '@/types'
 import Card from '@/components/ui/Card.vue'
 import CardHeader from '@/components/ui/CardHeader.vue'
 import CardTitle from '@/components/ui/CardTitle.vue'
@@ -182,27 +113,15 @@ const isEditing = computed(() => !!props.product)
 const form = ref({
   name: '',
   brand: '',
-  category: '',
   size: '',
-  unit: '',
   price: 0,
-  stock: 0,
-  barcode: '',
-  description: '',
 })
 
 const isFormValid = computed(() => {
   const price =
     typeof form.value.price === 'string' ? parseFloat(form.value.price) : form.value.price
-  const stock = typeof form.value.stock === 'string' ? parseInt(form.value.stock) : form.value.stock
 
-  const isValid =
-    form.value.name.trim() !== '' &&
-    form.value.category !== '' &&
-    form.value.size.trim() !== '' &&
-    form.value.unit !== '' &&
-    price > 0 &&
-    stock >= 0
+  const isValid = form.value.name.trim() !== '' && form.value.size.trim() !== '' && price > 0
 
   return isValid
 })
@@ -211,13 +130,8 @@ const resetForm = () => {
   form.value = {
     name: '',
     brand: '',
-    category: '',
     size: '',
-    unit: '',
     price: 0,
-    stock: 0,
-    barcode: '',
-    description: '',
   }
 }
 
@@ -225,13 +139,8 @@ const loadProductData = (product: Product) => {
   form.value = {
     name: product.name,
     brand: product.brand || '',
-    category: product.category,
     size: product.size,
-    unit: product.unit,
     price: product.price,
-    stock: product.stock,
-    barcode: product.barcode || '',
-    description: product.description || '',
   }
 }
 
@@ -240,25 +149,21 @@ const closeModal = () => {
   resetForm()
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!isFormValid.value) return
 
   try {
     if (isEditing.value && props.product) {
       // Update existing product
-      store.updateProduct(props.product.id, {
+      await store.updateProduct(props.product.id, {
         ...form.value,
-        brand: form.value.brand || undefined,
-        barcode: form.value.barcode || undefined,
-        description: form.value.description || undefined,
+        brand: form.value.brand || '',
       })
     } else {
       // Add new product
-      store.addProduct({
+      await store.addProduct({
         ...form.value,
-        brand: form.value.brand || undefined,
-        barcode: form.value.barcode || undefined,
-        description: form.value.description || undefined,
+        brand: form.value.brand || '',
       })
     }
 
