@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyApyNj4lm2i0gXVrQ3S9G-jMwTdjG9o7GU",
-  authDomain: "tindahan-inventory.firebaseapp.com",
-  projectId: "tindahan-inventory",
-  storageBucket: "tindahan-inventory.firebasestorage.app",
-  messagingSenderId: "128402097823",
-  appId: "1:128402097823:web:714de3b6e027f24a5b44aa",
-  measurementId: "G-PMMEBG3SQF"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 }
 
 // Initialize Firebase
