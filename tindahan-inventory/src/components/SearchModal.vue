@@ -66,21 +66,11 @@
                 <span class="truncate">{{ product.brand || 'N/A' }}</span>
                 <span>•</span>
                 <span class="truncate">{{ product.size }}</span>
-                <span class="hidden sm:inline">•</span>
-                <span
-                  class="text-xs bg-secondary px-1 sm:px-2 py-0.5 sm:py-1 rounded text-muted-foreground capitalize truncate hidden sm:inline"
-                >
-                  {{ product.unit }}
-                  {{ PRODUCT_CATEGORIES[product.category as keyof typeof PRODUCT_CATEGORIES] }}
-                </span>
               </div>
             </div>
             <div class="text-right flex-shrink-0">
               <div class="text-sm sm:text-base font-semibold" :class="getTextColor(index)">
                 ₱{{ product.price.toFixed(2) }}
-              </div>
-              <div class="text-xs" :class="getMetaTextColor(index)">
-                {{ product.stock }} {{ product.unit }} left
               </div>
             </div>
           </div>
@@ -123,7 +113,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useInventoryStore } from '@/stores/inventory'
-import { PRODUCT_CATEGORIES, type Product } from '@/types'
+import { type Product } from '@/types'
 import { Search, Package } from 'lucide-vue-next'
 
 interface Props {
@@ -147,17 +137,13 @@ const filteredResults = computed(() => {
   if (!searchQuery.value.trim()) return []
 
   const query = searchQuery.value.toLowerCase()
-  return store.products
-    .filter(
-      (product) =>
-        product.name.toLowerCase().includes(query) ||
-        product.brand?.toLowerCase().includes(query) ||
-        product.category.toLowerCase().includes(query) ||
-        PRODUCT_CATEGORIES[product.category as keyof typeof PRODUCT_CATEGORIES]
-          ?.toLowerCase()
-          .includes(query)
-    )
-    .slice(0, 8) // Limit to 8 results for better UX
+  return store.products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(query) ||
+      product.brand?.toLowerCase().includes(query) ||
+      product.size.toLowerCase().includes(query)
+  )
+  // .slice(0, 8) // Limit to 8 results for better UX
 })
 
 // Helper functions for dynamic styling
