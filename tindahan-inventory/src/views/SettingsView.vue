@@ -79,6 +79,14 @@
             <span class="text-xs sm:text-sm truncate font-bold">Products</span>
           </router-link>
           <router-link
+            to="/sales"
+            :class="$route.name === 'Sales' ? 'text-primary' : 'text-muted-foreground'"
+            class="flex flex-col items-center space-y-1 min-w-0 flex-1"
+          >
+            <Receipt class="w-4 h-4 sm:w-5 sm:h-5 font-bold" />
+            <span class="text-xs sm:text-sm truncate font-bold">Sales</span>
+          </router-link>
+          <router-link
             to="/settings"
             :class="$route.name === 'Settings' ? 'text-primary' : 'text-muted-foreground'"
             class="flex flex-col items-center space-y-1 min-w-0 flex-1"
@@ -94,23 +102,23 @@
     <main class="container mx-auto px-3 sm:px-4 py-3 sm:py-6">
       <div class="max-w-7xl mx-auto">
         <!-- Page Header -->
-        <div class="mb-6">
-          <h2 class="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+        <div class="mb-4 sm:mb-6">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
             Settings & Data Management
           </h2>
-          <p class="text-muted-foreground">
+          <p class="text-sm sm:text-base text-muted-foreground">
             Manage your data synchronization, import/export products, and configure your store
             settings.
           </p>
         </div>
 
         <!-- Settings Sections -->
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
           <!-- Data Synchronization Section -->
           <section>
-            <div class="bg-card border rounded-lg p-4 sm:p-6 shadow-sm">
-              <h3 class="text-xl font-semibold mb-4 flex items-center">
-                <Database class="w-5 h-5 mr-2" />
+            <div class="bg-card border rounded-lg p-3 sm:p-4 md:p-6 shadow-sm">
+              <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 flex items-center">
+                <Database class="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Data Synchronization
               </h3>
               <SyncPanel />
@@ -119,18 +127,18 @@
 
           <!-- Store Information Section -->
           <section>
-            <div class="bg-card border rounded-lg p-4 sm:p-6 shadow-sm">
-              <h3 class="text-xl font-semibold mb-4 flex items-center">
-                <Store class="w-5 h-5 mr-2" />
+            <div class="bg-card border rounded-lg p-3 sm:p-4 md:p-6 shadow-sm">
+              <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 flex items-center">
+                <Store class="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Store Information
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label class="block text-sm font-medium mb-2">Store Name</label>
                   <input
                     type="text"
                     value="Ate Chat Sari Sari Store"
-                    class="w-full p-3 border border-input rounded-md bg-background"
+                    class="w-full p-2 sm:p-3 text-sm sm:text-base border border-input rounded-md bg-background"
                     readonly
                   />
                 </div>
@@ -139,7 +147,7 @@
                   <input
                     type="text"
                     value="Sari Sari Store"
-                    class="w-full p-3 border border-input rounded-md bg-background"
+                    class="w-full p-2 sm:p-3 text-sm sm:text-base border border-input rounded-md bg-background"
                     readonly
                   />
                 </div>
@@ -149,20 +157,26 @@
 
           <!-- Appearance Section -->
           <section>
-            <div class="bg-card border rounded-lg p-4 sm:p-6 shadow-sm">
-              <h3 class="text-xl font-semibold mb-4 flex items-center">
-                <Palette class="w-5 h-5 mr-2" />
+            <div class="bg-card border rounded-lg p-3 sm:p-4 md:p-6 shadow-sm">
+              <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 flex items-center">
+                <Palette class="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Appearance
               </h3>
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="font-medium">Theme</h4>
-                  <p class="text-sm text-muted-foreground">Choose between light and dark mode</p>
+              <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4"
+              >
+                <div class="flex-1">
+                  <h4 class="font-medium text-sm sm:text-base">Theme</h4>
+                  <p class="text-xs sm:text-sm text-muted-foreground">
+                    Choose between light and dark mode
+                  </p>
                 </div>
-                <Button @click="toggleTheme" variant="outline">
+                <Button @click="toggleTheme" variant="outline" class="self-start sm:self-auto">
                   <Sun v-if="isDark" class="w-4 h-4 mr-2" />
                   <Moon v-else class="w-4 h-4 mr-2" />
-                  {{ isDark ? 'Light Mode' : 'Dark Mode' }}
+                  <span class="text-sm sm:text-base">{{
+                    isDark ? 'Light Mode' : 'Dark Mode'
+                  }}</span>
                 </Button>
               </div>
             </div>
@@ -170,29 +184,29 @@
 
           <!-- System Information Section -->
           <section>
-            <div class="bg-card border rounded-lg p-4 sm:p-6 shadow-sm">
-              <h3 class="text-xl font-semibold mb-4 flex items-center">
-                <Info class="w-5 h-5 mr-2" />
+            <div class="bg-card border rounded-lg p-3 sm:p-4 md:p-6 shadow-sm">
+              <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 flex items-center">
+                <Info class="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 System Information
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
+                <div class="flex justify-between sm:block">
                   <span class="font-medium">Version:</span>
-                  <span class="ml-2 text-muted-foreground">v1.0.0</span>
+                  <span class="ml-2 sm:ml-0 text-muted-foreground">v1.0.0</span>
                 </div>
-                <div>
+                <div class="flex justify-between sm:block">
                   <span class="font-medium">Last Updated:</span>
-                  <span class="ml-2 text-muted-foreground">{{
+                  <span class="ml-2 sm:ml-0 text-muted-foreground">{{
                     new Date().toLocaleDateString()
                   }}</span>
                 </div>
-                <div>
+                <div class="flex justify-between sm:block">
                   <span class="font-medium">Products Count:</span>
-                  <span class="ml-2 text-muted-foreground">{{ productCount }}</span>
+                  <span class="ml-2 sm:ml-0 text-muted-foreground">{{ productCount }}</span>
                 </div>
-                <div>
+                <div class="flex justify-between sm:block">
                   <span class="font-medium">Total Sales:</span>
-                  <span class="ml-2 text-muted-foreground">{{ transactionCount }}</span>
+                  <span class="ml-2 sm:ml-0 text-muted-foreground">{{ transactionCount }}</span>
                 </div>
               </div>
             </div>
@@ -213,6 +227,7 @@ import {
   Sun,
   Moon,
   ShoppingCart as ShoppingCartIcon,
+  Receipt,
   Settings as SettingsIcon,
   Database,
   Store,
