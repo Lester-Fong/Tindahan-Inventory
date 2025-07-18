@@ -117,6 +117,9 @@
     <!-- Main Content -->
     <main class="container mx-auto px-3 sm:px-4 py-3 sm:py-6">
       <div class="max-w-7xl mx-auto">
+        <!-- Sync Panel -->
+        <SyncPanel />
+
         <!-- Products Tab (New Single Page Layout) -->
         <div v-if="activeTab === 'products'">
           <!-- Search Field at the very top (Clickable) -->
@@ -163,6 +166,9 @@
 
     <!-- Search Modal -->
     <SearchModal :is-open="showSearchModal" @close="closeSearchModal" @select="onProductSelect" />
+
+    <!-- Notification Toast -->
+    <NotificationToast />
   </div>
 </template>
 
@@ -170,16 +176,20 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useInventoryStore } from '@/stores/inventory'
 import { useTheme } from '@/composables/useTheme'
-import { PRODUCT_CATEGORIES, type Product } from '@/types'
+import { useNotifications } from '@/composables/useNotifications'
+import { type Product } from '@/types'
 import ShoppingCart from '@/components/ShoppingCart.vue'
 import SalesHistory from '@/components/SalesHistory.vue'
 import ProductModal from '@/components/ProductModal.vue'
 import SearchModal from '@/components/SearchModal.vue'
+import SyncPanel from '@/components/SyncPanel.vue'
+import NotificationToast from '@/components/NotificationToast.vue'
 import Button from '@/components/ui/Button.vue'
 import { Sun, Moon, Plus, ShoppingCart as ShoppingCartIcon, Receipt, Search } from 'lucide-vue-next'
 
 const store = useInventoryStore()
 const { isDark, toggleTheme, initTheme } = useTheme()
+const { notifications } = useNotifications()
 
 const activeTab = ref<'products' | 'transactions'>('products')
 const showAddProduct = ref(false)
@@ -188,15 +198,10 @@ const showSearchModal = ref(false)
 const cartItemCount = computed(() => store.cartItemCount)
 const cartTotal = computed(() => store.cartTotal)
 
-// Search and filter functionality
+// Search functionality
 const searchQuery = computed({
   get: () => store.searchQuery,
   set: (value) => store.setSearchQuery(value),
-})
-
-const selectedCategory = computed({
-  get: () => store.selectedCategory,
-  set: (value) => store.setSelectedCategory(value),
 })
 
 const openAddProductModal = () => {
