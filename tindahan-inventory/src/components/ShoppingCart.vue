@@ -63,7 +63,6 @@
                 variant="outline"
                 size="sm"
                 class="h-7 w-7 sm:h-8 sm:w-8 p-0 flex items-center justify-center flex-shrink-0"
-                :disabled="item.quantity >= item.product.stock"
               >
                 <Plus class="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
@@ -137,7 +136,7 @@ const cartItemCount = computed(() => store.cartItemCount)
 
 const increaseQuantity = (productId: string) => {
   const item = cart.value.find((item) => item.product.id === productId)
-  if (item && item.quantity < item.product.stock) {
+  if (item) {
     store.updateCartItemQuantity(productId, item.quantity + 1)
   }
 }
