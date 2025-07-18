@@ -144,3 +144,7 @@ Creating an inventory system for a Filipino tindahan (mini grocery) with AI agen
 - Simple UI for easy use by family members
 - Voice commands in Tagalog/English
 - Offline capability with local JSON storage
+
+## KEEP IN MIND
+
+- This application will be converted into apk via webview for android devices.

@@ -1,0 +1,21 @@
+// Firestore Security Rules for Tindahan Inventory
+// These rules allow read/write access to all users
+// Consider adding authentication in production
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Products collection - allow all operations
+    match /products/{document} {
+      allow read, write: if true;
+    }
+    
+    // Sync metadata collection - allow all operations
+    match /syncMetadata/{document} {
+      allow read, write: if true;
+    }
+    
+    // For production, consider using authentication:
+    // allow read, write: if request.auth != null;
+  }
+}
